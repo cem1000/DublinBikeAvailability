@@ -58,7 +58,7 @@ Markers on the map represent bike stations. Their color indicates bike availabil
 """)
 
 # A prompt to guide users to use the sidebar
-st.sidebar.title("Select Hour and Day")
+st.sidebar.title("Select Time Interval and Day")
 st.sidebar.text("""
 Use the filters below to 
 select the day and time interval
