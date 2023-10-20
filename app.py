@@ -61,7 +61,7 @@ Markers on the map represent bike stations. Their color indicates bike availabil
 st.sidebar.title("Select Hour and Day")
 st.sidebar.text("""
 Use the filters below to 
-select the hour and day
+select the day and time interval
 This gets you what the typical 
 availablility was in the past two weeks!""")
 
