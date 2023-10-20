@@ -6,28 +6,8 @@ from streamlit_folium import folium_static
 import pandas as pd
 
 def load_data():
-    df = pd.read_csv('dublin_bike.csv')
-    df['last_update'] = pd.to_datetime(df['last_update'])
-
-    # Create time intervals
-    df['hour'] = df['last_update'].dt.hour
-    df['minute_interval'] = df['last_update'].dt.minute // 30 * 30  # this will give 0 or 30
-
-    # Logic for end interval
-    end_minute = (df['minute_interval'] + 30) % 60
-    end_hour = df['hour'] + ((df['minute_interval'] + 30) // 60)
-    
-    df['time_interval'] = df['hour'].astype(str).str.zfill(2) + ':' + df['minute_interval'].astype(str).str.zfill(2) + " - " + end_hour.astype(str).str.zfill(2) + ':' + end_minute.astype(str).str.zfill(2)
-    
-    df['day_of_week'] = df['last_update'].dt.day_name()
-
-    aggregated = df.groupby(['time_interval', 'day_of_week', 'address', 'latitude', 'longitude']).agg(
-        available_bikes=('available_bikes', 'sum'),
-        bike_stands=('bike_stands', 'sum')
-    ).reset_index()
-    aggregated['capacity_ratio'] = aggregated['available_bikes'] / aggregated['bike_stands']
-
-    return aggregated
+    df = pd.read_csv('dublinbikes.csv')
+    return df
 
 
 def get_color_and_status(capacity_ratio, mode):
