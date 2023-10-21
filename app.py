@@ -57,14 +57,6 @@ Markers on the map represent bike stations. Their color indicates bike availabil
 - **Red**: Low availability for picking up and low capacity for dropping off.
 """)
 
-# A prompt to guide users to use the sidebar
-st.sidebar.title("Select Time Interval and Day")
-st.sidebar.text("""
-Use the filters below to 
-select the day and time interval
-This gets you what the typical 
-availablility was in the past two weeks!""")
-
 # Choose Mode (Reduced Gap)
 st.markdown("### Choose mode:", unsafe_allow_html=True)
 mode = st.radio("", ["Picking Up", "Dropping Off"])
@@ -73,24 +65,19 @@ mode = st.radio("", ["Picking Up", "Dropping Off"])
 if 'data' not in st.session_state:
     st.session_state.data = load_data()
 
+st.header("Filters")
+# Order days from Monday to Sunday
+days_ordered = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+day = st.selectbox("Select Day:", days_ordered, key="day_selectbox")
 
+# Order time intervals logically
+intervals_ordered = sorted(st.session_state.data['time_interval'].unique())
 
+# Setting default time interval
+default_time_interval = "09:00 - 09:30"
+default_index = intervals_ordered.index(default_time_interval)
 
-with st.sidebar:
-    st.header("Filters")
-    # Order days from Monday to Sunday
-    days_ordered = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    day = st.selectbox("Select Day:", days_ordered, key="day_selectbox")
-
-    # Order time intervals logically
-    intervals_ordered = sorted(st.session_state.data['time_interval'].unique())
-
-    # Setting default time interval
-    default_time_interval = "09:00 - 09:30"
-    default_index = intervals_ordered.index(default_time_interval)
-
-    time_interval = st.selectbox("Select Time Interval:", intervals_ordered, index=default_index, key="time_interval_selectbox")
-
+time_interval = st.selectbox("Select Time Interval:", intervals_ordered, index=default_index, key="time_interval_selectbox")
 
 st.write(f"Selected Day: {day} | Time Interval: {time_interval}")
 
