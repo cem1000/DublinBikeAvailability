@@ -22,3 +22,14 @@ jobs:
 
       - name: Run Data Pull Script
         run: python DublinBikeDataPull.py
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "githubaction@github.com"
+
+      - name: Commit and Push CSV
+        run: |
+          git add dublinbikes.csv
+          git commit -m "Update dublinbikes.csv with new data"
+          git push
