@@ -15,10 +15,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'  # Use the desired Python version
+          python-version: '3.x'  
 
       - name: Install Dependencies
-        run: pip install -r requirements.txt  # Install your project dependencies
+        run: pip install -r requirements.txt  
 
       - name: Run Data Pull Script
         run: python DublinBikeDataPull.py
