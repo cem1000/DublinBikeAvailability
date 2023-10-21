@@ -96,4 +96,4 @@ st.write(f"Selected Day: {day} | Time Interval: {time_interval}")
 
 # Use the user's selections to update the map
 map_data = plot_map_for_hour_and_day(time_interval, day, mode, st.session_state.data)
-folium_static(map_data, width=1200, height=800)
+folium_static(map_data, width=800, height=800)
