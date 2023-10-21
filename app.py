@@ -3,9 +3,12 @@ import pandas as pd
 import folium
 from streamlit_folium import folium_static
 
+import pandas as pd
+
 def load_data():
     df = pd.read_csv('dublinbikes.csv')
     return df
+
 
 def get_color_and_status(capacity_ratio, mode):
     if mode == "Picking Up":
@@ -23,6 +26,9 @@ def get_color_and_status(capacity_ratio, mode):
         else:
             return 'red', 'Low availability of bike stands'
 
+
+
+        
 def plot_map_for_hour_and_day(time_interval, day, mode, data):
     filtered_data = data[(data['time_interval'] == time_interval) & (data['day_of_week'] == day)]
     m = folium.Map(location=[filtered_data['latitude'].mean(), filtered_data['longitude'].mean()], zoom_start=14)
@@ -37,61 +43,57 @@ def plot_map_for_hour_and_day(time_interval, day, mode, data):
 
     return m
 
-# Streamlit UI & Layout Adjustments
-st.set_page_config(layout="wide")
 
-# Title
-st.title("Dublin Bikes Availability")
+
+# Streamlit UI
+st.markdown("# Dublin Bikes Availability")
 
 # Description
 st.write("""
 This app displays the availability of Dublin Bikes based on the selected day and hour from the last 14 days of data.
-Markers on the map represent bike stations. Their color indicates bike availability.
+Markers on the map represent bike stations. Their color indicates bike availability:
+- **Green**: Good availability for picking up bikes.
+- **Orange**: Medium availability.
+- **Red**: Low availability for picking up and low capacity for dropping off.
 """)
 
-# Adding custom CSS to make it visually appealing
-st.markdown("""
-<style>
-    div[data-baseweb="select"] > div {
-        width: 250px;
-    }
-    .css-2trqyj {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-    }
-    .css-17eq0hr {
-        margin: 0.2rem !important;
-    }
-</style>
-""", unsafe_allow_html=True)
+# A prompt to guide users to use the sidebar
+st.sidebar.title("Select Time Interval and Day")
+st.sidebar.text("""
+Use the filters below to 
+select the day and time interval
+This gets you what the typical 
+availablility was in the past two weeks!""")
 
-
+# Choose Mode (Reduced Gap)
+st.markdown("### Choose mode:", unsafe_allow_html=True)
+mode = st.radio("", ["Picking Up", "Dropping Off"])
 
 # Load data only if it hasn't been loaded yet
 if 'data' not in st.session_state:
-    st.session_state.data = load_data()  # Assuming you have a load_data() function to get the data
+    st.session_state.data = load_data()
 
-# Adjust the widths of the columns
-col1, col2, col3, col4 = st.columns([2,1,1,1]) # Adjust the numbers for desired widths
 
-# Place your filters in the columns
-col1.subheader("Choose mode:")
-mode = col1.radio("", ["Picking Up", "Dropping Off"])
 
-col2.subheader("Select Day:")
-days_ordered = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-day = col2.selectbox("", days_ordered, key="day_selectbox")
 
-col3.subheader("Select Time Interval:")
-intervals_ordered = sorted(st.session_state.data['time_interval'].unique())
-default_time_interval = "09:00 - 09:30"
-default_index = intervals_ordered.index(default_time_interval)
-time_interval = col3.selectbox("", intervals_ordered, index=default_index, key="time_interval_selectbox")
+with st.sidebar:
+    st.header("Filters")
+    # Order days from Monday to Sunday
+    days_ordered = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    day = st.selectbox("Select Day:", days_ordered, key="day_selectbox")
 
+    # Order time intervals logically
+    intervals_ordered = sorted(st.session_state.data['time_interval'].unique())
+
+    # Setting default time interval
+    default_time_interval = "09:00 - 09:30"
+    default_index = intervals_ordered.index(default_time_interval)
+
+    time_interval = st.selectbox("Select Time Interval:", intervals_ordered, index=default_index, key="time_interval_selectbox")
+
+
+st.write(f"Selected Day: {day} | Time Interval: {time_interval}")
 
 # Use the user's selections to update the map
 map_data = plot_map_for_hour_and_day(time_interval, day, mode, st.session_state.data)
-
-# Display the map below the filters
-folium_static(map_data, width=1200, height=600)
-
+folium_static(map_data, width=1200, height=800)
