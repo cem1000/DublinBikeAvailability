@@ -34,5 +34,5 @@ jobs:
         run: |
           git add dublinbikes.csv
           git commit -m "Update dublinbikes.csv with new data"
-          git push https://${{ secrets.MY_PAT }}@github.com/cem1000/DublinBikeAvailability.git
+          git push https://cem1000:${{ secrets.MY_PAT }}@github.com/cem1000/DublinBikeAvailability.git
 
