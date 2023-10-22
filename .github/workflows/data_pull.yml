@@ -31,7 +31,5 @@ jobs:
         run: |
           git add dublinbikes.csv
           git commit -m "Update dublinbikes.csv with new data"
-          git push origin HEAD:main
-        env:
-          GIT_AUTH_TOKEN: ${{ secrets.MY_PAT }}
+          git push https://${{ secrets.MY_PAT }}@github.com/cem1000/DublinBikeAvailability.git
 
