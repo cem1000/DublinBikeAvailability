@@ -1,8 +1,7 @@
 name: Daily Data Pull
 
 on:
-  schedule:
-    - cron: '0 8 * * *'  # Schedule to run every day at 8 AM UTC
+  workflow_dispatch:
 
 jobs:
   data_pull:
