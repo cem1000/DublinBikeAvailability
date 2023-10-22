@@ -1,3 +1,4 @@
+name: Daily Data Pull
 
 on:
 #  schedule:
@@ -5,7 +6,6 @@ on:
 #
 
   workflow_dispatch:
-
 jobs:
   data_pull:
     runs-on: ubuntu-latest
@@ -29,11 +29,10 @@ jobs:
         run: |
           git config user.name "GitHub Action"
           git config user.email "githubaction@github.com"
-
+          
       - name: Commit and Push CSV
         run: |
           git add dublinbikes.csv
           git commit -m "Update dublinbikes.csv with new data"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
+          git push https://${{ secrets.MY_PAT }}@github.com/cem1000/DublinBikeAvailability.git
+
