@@ -1,6 +1,9 @@
-name: Daily Data Pull
 
 on:
+#  schedule:
+#    - cron: '0 8 * * *'  # Schedule to run every day at 8 AM UTC
+#
+
   workflow_dispatch:
 
 jobs:
@@ -31,5 +34,6 @@ jobs:
         run: |
           git add dublinbikes.csv
           git commit -m "Update dublinbikes.csv with new data"
-          git push https://${{ secrets.MY_PAT }}@github.com/cem1000/DublinBikeAvailability.git
-
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_PAT }}
