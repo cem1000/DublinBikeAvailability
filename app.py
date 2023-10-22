@@ -2,30 +2,37 @@ import streamlit as st
 import pandas as pd
 import folium
 from streamlit_folium import folium_static
+import datetime
+import pytz
 
-import pandas as pd
 
 def load_data():
     df = pd.read_csv('dublinbikes.csv')
     return df
 
-
 def get_color_and_status(capacity_ratio, mode):
     if mode == "Picking Up":
-        if capacity_ratio < 0.25:
-            return 'red', 'Low availability of bikes'
-        elif capacity_ratio < 0.75:
-            return 'orange', 'Medium availability of bikes'
+        if capacity_ratio <= 0.2:
+            return 'red', 'Very Low availability'
+        elif capacity_ratio <= 0.4:
+            return 'orange', 'Low availability'
+        elif capacity_ratio <= 0.6:
+            return 'beige', 'Moderate availability'
+        elif capacity_ratio <= 0.8:
+            return 'green', 'High availability'
         else:
-            return 'green', 'High availability of bikes'
+            return 'lightgreen', 'Very High availability'
     else:  # Dropping Off
-        if capacity_ratio < 0.25:
-            return 'green', 'High availability of bike stands'
-        elif capacity_ratio < 0.75:
-            return 'orange', 'Medium availability of bike stands'
+        if capacity_ratio <= 0.2:
+            return 'lightgreen', 'Very High availability of stands'
+        elif capacity_ratio <= 0.4:
+            return 'green', 'High availability of stands'
+        elif capacity_ratio <= 0.6:
+            return 'beige', 'Moderate availability of stands'
+        elif capacity_ratio <= 0.8:
+            return 'orange', 'Low availability of stands'
         else:
-            return 'red', 'Low availability of bike stands'
-
+            return 'red', 'Very Low availability of stands'
 
 
         
@@ -35,14 +42,14 @@ def plot_map_for_hour_and_day(time_interval, day, mode, data):
     
     for _, row in filtered_data.iterrows():
         color, availability = get_color_and_status(row['capacity_ratio'], mode)
+        label = f"{row['address']} - {availability}"
         folium.Marker(
             location=[row['latitude'], row['longitude']],
-            popup=availability,
+            popup=label,
             icon=folium.Icon(color=color),
         ).add_to(m)
 
     return m
-
 
 st.set_page_config(layout="wide")
 
@@ -51,11 +58,14 @@ st.markdown("# Dublin Bikes Availability")
 
 # Description
 st.write("""
-This app displays the availability of Dublin Bikes based on the selected day and hour from the last 14 days of data.
-Markers on the map represent bike stations. Their color indicates bike availability:
-- **Green**: Good availability for picking up bikes.
-- **Orange**: Medium availability.
-- **Red**: Low availability for picking up and low capacity for dropping off.
+This app showcases the typical availability of Dublin Bikes over the last 14 days. 
+If you're planning your commute and often find no bikes available at 8 AM, use this app to discover the best time to get one. 
+Markers indicate bike stations and their colors represent availability:
+- **Very High (Green)**: Plentiful bikes or stands.
+- **High (Light Green)**: Good number of bikes or stands.
+- **Moderate (Orange)**: Average availability.
+- **Low (Dark Orange)**: Limited bikes or stands.
+- **Very Low (Red)**: Hardly any bikes or stands available.
 """)
 
 # A prompt to guide users to use the sidebar
@@ -76,24 +86,51 @@ if 'data' not in st.session_state:
 
 
 
+def get_current_irish_time():
+    # Convert current UTC time to Irish local time
+    current_time = datetime.datetime.utcnow()
+    tz_dublin = pytz.timezone('Europe/Dublin')
+    local_time = current_time.astimezone(tz_dublin)
+
+    # Fetch current day of the week
+    day_of_week = local_time.strftime('%A') # This will give you 'Monday', 'Tuesday' etc.
+
+    # Get the current time interval
+    current_hour = local_time.hour
+    current_minute = local_time.minute
+    if current_minute >= 30:
+        next_hour = (current_hour + 1) % 24  # handle case for end of day
+        interval = f"{current_hour:02d}:30 - {next_hour:02d}:00"
+    else:
+        if current_hour == 0:
+            prev_hour = 23
+        else:
+            prev_hour = current_hour - 1
+        interval = f"{prev_hour:02d}:30 - {current_hour:02d}:00"
+
+    return day_of_week, interval
 
 with st.sidebar:
     st.header("Filters")
     # Order days from Monday to Sunday
     days_ordered = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-    day = st.selectbox("Select Day:", days_ordered, key="day_selectbox")
+    day_of_week, interval = get_current_irish_time()
+    
+    default_day_index = days_ordered.index(day_of_week)
+
+    day = st.selectbox("Select Day:", days_ordered, index=default_day_index, key="day_selectbox")
 
     # Order time intervals logically
     intervals_ordered = sorted(st.session_state.data['time_interval'].unique())
-
-    # Setting default time interval
-    default_time_interval = "09:00 - 09:30"
-    default_index = intervals_ordered.index(default_time_interval)
+    default_index = intervals_ordered.index(interval)
 
     time_interval = st.selectbox("Select Time Interval:", intervals_ordered, index=default_index, key="time_interval_selectbox")
 
 
+
 st.write(f"Selected Day: {day} | Time Interval: {time_interval}")
+
+
 
 # Use the user's selections to update the map
 map_data = plot_map_for_hour_and_day(time_interval, day, mode, st.session_state.data)
