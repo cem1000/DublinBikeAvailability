@@ -54,7 +54,7 @@ def plot_map_for_hour_and_day(time_interval, day, mode, data):
 st.set_page_config(layout="wide")
 
 # Streamlit UI
-st.markdown("# Dublin Bikes Availability")
+st.markdown("# Dublin Bikes Historical Availability")
 
 # Description
 st.write("""
