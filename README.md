@@ -20,6 +20,6 @@ Check out the app here: [Dublin Bikes Streamlit App](https://dublinbikes.streaml
 
 To run the analysis or app on your local machine, clone the repository and install the necessary dependencies as listed in the `requirements.txt` file.
 
-## Contributions
+## Contributions + Usage
 
-Suggestions and contributions are always welcome! Feel free to fork the project, make improvements, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
+Feel free to fork the project! :) 
