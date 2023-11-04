@@ -23,7 +23,3 @@ To run the analysis or app on your local machine, clone the repository and insta
 ## Contributions
 
 Suggestions and contributions are always welcome! Feel free to fork the project, make improvements, and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details (coming soon).
