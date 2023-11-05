@@ -4,7 +4,23 @@ import folium
 from streamlit_folium import folium_static
 import datetime
 import pytz
+import streamlit.components.v1 as components
 
+google_analytics_script = """
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2D3Y5N8KXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2D3Y5N8KXX');
+</script>
+"""
+
+# Use the `html` method to inject HTML into the app.
+# The height is set to zero since we don't need to display anything.
+components.html(google_analytics_script, height=0)
 
 def load_data():
     df = pd.read_csv('dublinbikes.csv')
