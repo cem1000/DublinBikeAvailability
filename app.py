@@ -60,7 +60,7 @@ st.markdown("# Dublin Bikes Historical Availability")
 # Description
 st.write("""
 This app showcases the typical availability of Dublin Bikes over the last 14 days. 
-If you're planning your commute and often find no bikes available at 8 AM, use this app to discover the best time to get one. 
+If you're planning your commute and often find no bikes available at 8 AM, use this app to discover the best time to get one in future! 
 
 Remember, this app does not have real time data. Only holds last 14 days historical data. For real time data, visit https://www.dublinbikes.ie/en/mapping. 
 Markers indicate bike stations and their colors represent availability:
